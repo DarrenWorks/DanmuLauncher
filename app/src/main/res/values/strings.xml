@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DanmuLauncher</string>
+    <string name="accessibility_service_description">打开以自动发送弹幕</string>
 </resources>
