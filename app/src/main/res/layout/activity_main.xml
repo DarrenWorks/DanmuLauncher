@@ -4,17 +4,103 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btnOpenOverLay"
+    <TextView
+        android:id="@+id/tvSendContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="弹幕："
+        android:textAlignment="viewStart"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/etSendContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etSendContent" />
+
+    <EditText
+        android:id="@+id/etSendContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="打开悬浮窗"
-        android:visibility="invisible"
+        android:ems="10"
+        android:hint="您要定时发送的弹幕"
+        android:inputType="text"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintEnd_toStartOf="@+id/btnSendContent"
+        app:layout_constraintStart_toEndOf="@+id/tvSendIntervals"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSendIntervals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="间隔(s)："
+        android:textAlignment="viewStart"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/etSendIntervals"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etSendIntervals" />
+
+    <EditText
+        android:id="@+id/etSendIntervals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="您发送弹幕的间隔时间（秒）"
+        android:inputType="textPersonName"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintEnd_toEndOf="@+id/etSendContent"
+        app:layout_constraintStart_toEndOf="@+id/tvSendIntervals"
+        app:layout_constraintTop_toBottomOf="@+id/etSendContent" />
+
+    <Button
+        android:id="@+id/btnSendContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/etSendContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etSendContent" />
+
+    <Button
+        android:id="@+id/btnSendIntervals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/etSendIntervals"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btnSendContent"
+        app:layout_constraintTop_toTopOf="@+id/etSendIntervals" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="使用前请在无障碍服务中打开DanmuLauncher\n修改后点击确定，看到提示代表修改成功"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
