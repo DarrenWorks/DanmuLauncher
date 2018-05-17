@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <SwitchPreference
+            android:key="pref_key_start_launch"
+            android:title="@string/pref_start_launch_title"
+            android:defaultValue="false"/>
+        <EditTextPreference
+                android:key="pref_key_launch_intervals"
+                android:title="@string/pref_launch_intervals_title"
+                android:defaultValue="30"
+            android:dependency="123"/>
+</PreferenceScreen>
