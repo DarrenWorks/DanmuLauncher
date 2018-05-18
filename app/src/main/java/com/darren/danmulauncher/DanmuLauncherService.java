@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-// TODO: 2018/5/16 无法找到控件
 public class DanmuLauncherService extends AccessibilityService {
     public static final String TAG = "DanmuLauncherService";
 

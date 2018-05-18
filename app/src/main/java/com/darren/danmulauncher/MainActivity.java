@@ -2,19 +2,47 @@ package com.darren.danmulauncher;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
-import com.darren.danmulauncher.PreferenceFragment.MainSettingFragment;
 
 public class MainActivity extends Activity {
     public static final String TAG = "MainActivity";
+
+    private RecyclerView mRvSettings;
+    private Button btnSure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new MainSettingFragment())
-                .commit();
+        mRvSettings = findViewById(R.id.rvSettings);
+        btnSure = findViewById(R.id.btnSure);
+
+
+        final MainSettingAdapter adapter =
+                new MainSettingAdapter(SharedPreferencesUtil.getStringSet(
+                        SharedPreferencesUtil.mKeySendContent,
+                        SharedPreferencesUtil.mDefSendContentSet
+                ));
+        mRvSettings.setAdapter(adapter);
+        mRvSettings.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        btnSure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                switch (id) {
+                    case R.id.btnSure: {
+                        SharedPreferencesUtil.putStringSet(
+                                SharedPreferencesUtil.mKeySendContent,
+                                adapter.getSendContents());
+                    }
+                }
+            }
+        });
     }
 //    private void openOverLay() {
 //        if (Build.VERSION.SDK_INT >= 23) {
