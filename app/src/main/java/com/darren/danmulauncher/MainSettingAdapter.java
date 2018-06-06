@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,15 +24,37 @@ public class MainSettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_SEND_INTERVALS = 1;
     private static final int VIEW_TYPE_SEND_CONTENTS = 2;
 
-    private List<String> mSendContenstList;
+    private List<String> mSendContentsList;
+    private List<String> mSelectedSendContentsList;
+    private int mSendIntervals;
 
-    public MainSettingAdapter(Set<String> sendContentSet) {
+    public MainSettingAdapter(Set<String> sendContentSet, Set<String> selectedList, int sendIntervals) {
         super();
-        mSendContenstList = new ArrayList<>(sendContentSet);
+        mSendContentsList = new ArrayList<>(sendContentSet);
+        mSelectedSendContentsList = new ArrayList<>(selectedList);
+        mSendIntervals = sendIntervals;
     }
 
     public Set<String> getSendContents () {
-        return new LinkedHashSet<>(mSendContenstList);
+        return new LinkedHashSet<>(mSendContentsList);
+    }
+
+    public int getSendIntervals() {
+        return mSendIntervals;
+    }
+
+    public Set<String> getSelectedList() {
+        return new LinkedHashSet<>(mSelectedSendContentsList);
+    }
+
+    public void addSendContent() {
+        mSendContentsList.add(SharedPreferencesUtil.mDefSendContent);
+        this.notifyItemInserted(mSendContentsList.size()+2);
+    }
+
+    public void refreshSendContents (Set<String> sendContentsSet) {
+        mSendContentsList = new ArrayList<>(sendContentsSet);
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -64,14 +87,35 @@ public class MainSettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof SendSwitchHolder) {
             SendSwitchHolder viewHolder = (SendSwitchHolder)holder;
         } else if (holder instanceof SendIntervalsHolder) {
             SendIntervalsHolder viewHolder = (SendIntervalsHolder)holder;
+            viewHolder.tvTitle.setText("弹幕间隔(s)");
+            viewHolder.etIntervals.setText(String.valueOf(mSendIntervals));
+            viewHolder.etIntervals.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String string  = s.toString();
+                    mSendIntervals = string.isEmpty() ? 0 : Integer.parseInt(s.toString());
+                }
+            });
         } else if (holder instanceof SendContentHolder) {
-            SendContentHolder viewHolder = (SendContentHolder)holder;
-            viewHolder.tvSendContent.setText(mSendContenstList.get(position - 2));
+            final SendContentHolder viewHolder = (SendContentHolder)holder;
+            viewHolder.tvSendContent.setText(mSendContentsList.get(position - 2));
+            if (mSelectedSendContentsList.contains(mSendContentsList.get(position-2))) {
+                viewHolder.cbisSent.setChecked(true);
+            }
             viewHolder.tvSendContent.addTextChangedListener(new TextWatcher() {
                 private String tempContent;
                 @Override
@@ -86,17 +130,32 @@ public class MainSettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    int index = mSendContenstList.indexOf(tempContent);
-                    mSendContenstList.remove(index);
-                    mSendContenstList.add(index, s.toString());
+                    int index = mSendContentsList.indexOf(tempContent);
+                    mSendContentsList.remove(index);
+                    mSendContentsList.add(index, s.toString());
+                    if (viewHolder.cbisSent.isChecked()) {
+                        index = mSelectedSendContentsList.indexOf(tempContent);
+                        mSelectedSendContentsList.remove(index);
+                        mSelectedSendContentsList.add(index, s.toString());
+                    }
                 }
             });
+                viewHolder.cbisSent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            mSelectedSendContentsList.add(mSendContentsList.get(position-2));
+                        } else {
+                            mSelectedSendContentsList.remove(mSendContentsList.get(position-2));
+                        }
+                    }
+                });
         }
     }
 
     @Override
     public int getItemCount() {
-        return mSendContenstList == null ? 2 : mSendContenstList.size() + 2;
+        return mSendContentsList == null ? 2 : mSendContentsList.size() + 2;
     }
 
     @Override

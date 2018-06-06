@@ -13,14 +13,17 @@ public class SharedPreferencesUtil {
 
     public static final String mKeySendContent = "弹幕";
     public static final String mKeySendIntervals = "间隔";
+    public static final String mKeyContentSelected = "选中";
 
     public static final String mDefSendContent = "喜欢的朋友别忘记订阅";
     public static final Set<String> mDefSendContentSet = new LinkedHashSet<>();
     public static final int mDefSendIntervals = 30;//单位：秒
+    public static final Set<String> mDefContentSelected = new LinkedHashSet<>();
 
     public static void init(Context context) {
         sharedPreferences = context.getSharedPreferences("Config", Context.MODE_PRIVATE);
         mDefSendContentSet.add(mDefSendContent);
+        mDefContentSelected.add(mDefSendContent);
     }
 
     public static String getString(String key, String defValue) {

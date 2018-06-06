@@ -2,35 +2,45 @@ package com.darren.danmulauncher;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-public class MainActivity extends Activity {
+
+public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     private RecyclerView mRvSettings;
-    private Button btnSure;
+    private Button mBtnSure;
+    private FloatingActionButton mFabAdd;
+    private Button mBtnClear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         mRvSettings = findViewById(R.id.rvSettings);
-        btnSure = findViewById(R.id.btnSure);
+        mBtnSure = findViewById(R.id.btnSure);
+        mFabAdd = findViewById(R.id.fabAdd);
+        mBtnClear = findViewById(R.id.btnClear);
 
 
         final MainSettingAdapter adapter =
-                new MainSettingAdapter(SharedPreferencesUtil.getStringSet(
-                        SharedPreferencesUtil.mKeySendContent,
-                        SharedPreferencesUtil.mDefSendContentSet
-                ));
+                new MainSettingAdapter(SharedPreferencesUtil.getStringSet(SharedPreferencesUtil.mKeySendContent, SharedPreferencesUtil.mDefSendContentSet)
+                        ,SharedPreferencesUtil.getStringSet(SharedPreferencesUtil.mKeyContentSelected, SharedPreferencesUtil.mDefContentSelected)
+                        ,SharedPreferencesUtil.getInt(SharedPreferencesUtil.mKeySendIntervals, SharedPreferencesUtil.mDefSendIntervals));
         mRvSettings.setAdapter(adapter);
-        mRvSettings.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRvSettings.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        btnSure.setOnClickListener(new View.OnClickListener() {
+        mBtnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
@@ -39,6 +49,44 @@ public class MainActivity extends Activity {
                         SharedPreferencesUtil.putStringSet(
                                 SharedPreferencesUtil.mKeySendContent,
                                 adapter.getSendContents());
+                        SharedPreferencesUtil.putInt(SharedPreferencesUtil.mKeySendIntervals,
+                                adapter.getSendIntervals());
+                        Set<String> tempSet = new LinkedHashSet<>(adapter.getSelectedList());
+                        Iterator<String> iterator = tempSet.iterator();
+                        while(iterator.hasNext()) {
+                            String s = iterator.next();
+                            if (!adapter.getSendContents().contains(s)) {
+                                tempSet.remove(s);
+                            }
+                        }
+                        SharedPreferencesUtil.putStringSet(SharedPreferencesUtil.mKeyContentSelected,
+                                tempSet);
+                    }
+                }
+            }
+        });
+
+        mFabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                switch (id) {
+                    case R.id.fabAdd: {
+                        adapter.addSendContent();
+                        break;
+                    }
+                }
+            }
+        });
+
+        mBtnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                switch (id) {
+                    case R.id.btnClear: {
+                        SharedPreferencesUtil.putStringSet(SharedPreferencesUtil.mKeyContentSelected, adapter.getSendContents());
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }

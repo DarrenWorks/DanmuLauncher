@@ -11,7 +11,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DanmuLauncherService extends AccessibilityService {
     public static final String TAG = "DanmuLauncherService";
@@ -22,6 +24,8 @@ public class DanmuLauncherService extends AccessibilityService {
     private AccessibilityNodeInfo mSend = null;
 
     private DanmuLaunchTask mTask;
+
+    private List<String> mSelectedSendContents;
 
     public DanmuLauncherService() {
         mTask = new DanmuLaunchTask();
@@ -82,7 +86,9 @@ public class DanmuLauncherService extends AccessibilityService {
                 }
                 if (countdown == 0) {
                     Bundle arguments = new Bundle();
-                    arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, SharedPreferencesUtil.getString(SharedPreferencesUtil.mKeySendContent, SharedPreferencesUtil.mDefSendContent));
+                    mSelectedSendContents = new ArrayList<>(SharedPreferencesUtil.getStringSet(SharedPreferencesUtil.mKeyContentSelected, SharedPreferencesUtil.mDefContentSelected));
+                    Random random = new Random();
+                    arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, mSelectedSendContents.get(random.nextInt(mSelectedSendContents.size())));
                     mComplainEdit.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
                     AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
                     if (nodeInfo != null) {
